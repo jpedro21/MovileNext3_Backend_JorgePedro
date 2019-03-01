@@ -3,13 +3,25 @@ package com.app.movile.entity;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.app.movile.coupon.Coupon;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
+@Entity
 public class Cart {
 	
+	@Id
+	@Column
 	private Long id;
+	@OneToMany(cascade=CascadeType.ALL)
 	private List<ItemCart> items;
+	@Column
 	private BigDecimal discount;
+	@OneToOne(cascade=CascadeType.ALL)
 	private Shipping shipping;
 	
 	public Long getId() {
@@ -52,7 +64,7 @@ public class Cart {
 		BigDecimal sum = new BigDecimal(0);
 		
 		for(ItemCart item : items) {
-			sum.add(item.getProduct().getPrice());
+			sum = sum.add(item.getProduct().getPrice());
 		}
 		
 		return sum;

@@ -5,13 +5,17 @@ import javax.validation.constraints.NotNull;
 
 import org.joda.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class CouponDto {
 	
 	@NotNull
 	private String code;
 	@NotNull
+	@JsonFormat(pattern="yyyy-MM-dd")
 	private LocalDate iniDate;
 	@NotNull
+	@JsonFormat(pattern="yyyy-MM-dd")
 	private LocalDate endDate;
 	@NotNull
 	private String text;

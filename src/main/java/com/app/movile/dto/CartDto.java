@@ -3,9 +3,6 @@ package com.app.movile.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.app.movile.coupon.Coupon;
-import com.app.movile.entity.ItemCart;
-
 public class CartDto {
 	
 	private List<ItemCartDto> items;

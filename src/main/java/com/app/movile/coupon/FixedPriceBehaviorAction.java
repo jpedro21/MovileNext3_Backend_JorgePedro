@@ -4,14 +4,24 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.app.movile.entity.Cart;
+import com.app.movile.repository.CartRepository;
 
 @Entity
+@Component
 public class FixedPriceBehaviorAction extends AbstractCouponBehavior implements Action {
 	
-	public FixedPriceBehaviorAction(String couponCode, BigDecimal discount) {
-		super(couponCode);
+	public FixedPriceBehaviorAction() {
+		
+	}
+	
+	public FixedPriceBehaviorAction(CouponImpl coupon, BigDecimal discount) {
+		super(coupon);
 		this.discount = discount;
 	}
 
@@ -19,14 +29,14 @@ public class FixedPriceBehaviorAction extends AbstractCouponBehavior implements 
 	private BigDecimal discount;
 	
 	@Override
-	public Cart applyAction(Cart cart) {
+	public void applyAction(Cart cart, CartRepository cartRepo) {
 		cart.setDiscount(discount);
-		return cart;
+		cartRepo.save(cart);
 	}
 
 	@Override
-	public Cart removeAction(Cart cart) {
+	public void removeAction(Cart cart, CartRepository cartRepo) {
 		cart.setDiscount(new BigDecimal(0));
-		return cart;
+		cartRepo.save(cart);
 	}
 }

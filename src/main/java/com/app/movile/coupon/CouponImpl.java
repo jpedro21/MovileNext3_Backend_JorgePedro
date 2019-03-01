@@ -4,12 +4,17 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import org.joda.time.LocalDate;
 
 import com.app.movile.entity.Cart;
 import com.app.movile.exception.BusinessException;
+import com.app.movile.exception.CouponBusinessException;
+import com.app.movile.repository.CartRepository;
 
 @Entity
 public class CouponImpl implements Coupon {
@@ -24,38 +29,37 @@ public class CouponImpl implements Coupon {
 	@Column
 	private String text;
 	
+	public CouponImpl() {
+		
+	}
+	
 	public CouponImpl(String code, LocalDate iniDate, LocalDate endDate, String text) {
-		
-		if(iniDate == null || endDate == null) {
-			throw new IllegalArgumentException("As datas de início e fim são obrigatórias.");
-		}
-		
-		if(this.iniDate.compareTo(endDate) > 0) {
-			throw new IllegalArgumentException("A data inicial não pode ser menor que a final.");
-		}
-		
-		if(this.endDate.compareTo(iniDate) < 0) {
-			throw new IllegalArgumentException("A data final não pode ser menor que a data inicial.");
-		}
-		
-		this.endDate = endDate;
-		this.iniDate = iniDate;
+		setCode(code);
+		setIniDate(iniDate);
+		setEndDate(endDate);
 		this.text = text;
 	}
 	
-	/**
+	/*
 	 * O Action deve ser setado em tempo de execução
 	 */
+	@Transient
 	private Action action;
 
-	/**
+	/*
 	 * A Restrição deve ser setado em tempo de execução
 	 * Devem ser adicionadas as regras mais triviais em primeiro
 	 * para contribuir com a performance
 	 */
+	@Transient
 	private List<Restriction> restrictions;
 	
 	public void setCode(String code) {
+		
+		if(code == null) {
+			throw new IllegalArgumentException("O código do cupom é uma informação obrigatória.");
+		}
+				
 		this.code = code;
 	}
 	
@@ -110,29 +114,44 @@ public class CouponImpl implements Coupon {
 	public String getText() {
 		return text;
 	}
-
+	
+	/*
+	 * Toda a ação altera alguma informação do carrinho de compras
+	 * portanto devemos passar um repositorio injetado para que 
+	 * possamos manipularmos estas informações.
+	 */
 	@Override
-	public Cart processCoupon(Cart cart) {
+	public void processCoupon(Cart cart, CartRepository cartRepo) {
+		
+		/*
+		 * Não deve existir um cupom sem ação
+		 */
+		if(action == null) {
+			throw new CouponBusinessException("Erro ao processar coupon");
+		}
+		
 		if(validate(cart)) {
-			return action.applyAction(cart);
-		} else {
-			return cart;
+			action.applyAction(cart, cartRepo);
 		}
 	}
 	
 	@Override
-	public Cart removeCoupon(Cart cart) {
-		return action.removeAction(cart);
+	public void removeCoupon(Cart cart, CartRepository cartRepo) {
+		action.removeAction(cart, cartRepo);
 	}
 
 	private boolean validate(Cart cart) {
 		
+		if(iniDate.compareTo(LocalDate.now()) > 0 || endDate.compareTo(LocalDate.now()) < 0) {
+			throw new CouponBusinessException("Cupom fora da data de vigência");
+		}
+		
 		if(!cart.hasProducts()) {
-			throw new BusinessException("Não existe item na sacola.");
+			throw new CouponBusinessException("Não existe item na sacola.");
 		}
 		
 		for(Restriction r : restrictions) {
-			if(!r.validate(cart)) return false;
+			if(r != null && !r.validate(cart)) return false;
 		}
 		return true;
 	}

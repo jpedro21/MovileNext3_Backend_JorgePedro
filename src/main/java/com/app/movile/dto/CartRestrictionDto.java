@@ -4,13 +4,13 @@ import java.math.BigDecimal;
 
 public class CartRestrictionDto {
 	
-	private BigDecimal cartPrice;
+	private BigDecimal minimumCartPrice;
 
-	public BigDecimal getCartPrice() {
-		return cartPrice;
+	public BigDecimal getMinimumCartPrice() {
+		return minimumCartPrice;
 	}
 
-	public void setCartPrice(BigDecimal cartPrice) {
-		this.cartPrice = cartPrice;
+	public void setMinimumCartPrice(BigDecimal minimumCartPrice) {
+		this.minimumCartPrice = minimumCartPrice;
 	}
 }

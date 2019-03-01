@@ -17,14 +17,15 @@ public abstract class AbstractCouponBehavior {
 	@OneToOne
 	@JoinColumn
 	@MapsId
-	protected Coupon coupon;
+	protected CouponImpl coupon;
 	
 	public AbstractCouponBehavior() {
 		
 	}
 	
-	public AbstractCouponBehavior(String couponCode) {
-		this.couponCode = couponCode;
+	public AbstractCouponBehavior(CouponImpl coupon) {
+		this.couponCode = coupon.getCode();
+		this.coupon = coupon;
 	}
 
 	public String getCouponCode() {

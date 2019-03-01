@@ -15,4 +15,8 @@ public class CouponService {
 	public void create(CouponDto coupon) {
 		business.create(coupon);
 	}
+
+	public void apply(String couponCode, Long idCart) {
+		business.applyCoupon(couponCode, idCart);
+	}
 }

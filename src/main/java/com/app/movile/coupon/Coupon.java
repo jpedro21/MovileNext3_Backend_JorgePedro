@@ -5,6 +5,7 @@ import java.util.List;
 import org.joda.time.LocalDate;
 
 import com.app.movile.entity.Cart;
+import com.app.movile.repository.CartRepository;
 
 public interface Coupon {
 	
@@ -15,6 +16,6 @@ public interface Coupon {
 	public void addRestriction(Restriction restriction);
 	public void setRestrictions(List<Restriction> restrictions);
 	public void setAction(Action action);
-	public Cart processCoupon(Cart cart);
-	public Cart removeCoupon(Cart cart);
+	public void processCoupon(Cart cart, CartRepository cartRepo);
+	public void removeCoupon(Cart cart, CartRepository cartRepo);
 }

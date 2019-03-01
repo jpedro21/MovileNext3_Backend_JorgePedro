@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 import com.app.movile.entity.Cart;
 import com.app.movile.exception.CouponBusinessException;
@@ -19,7 +18,7 @@ public class CartBehaviorRestriction extends AbstractCouponBehavior implements R
 		
 	}
 	
-	public CartBehaviorRestriction(String coupon, BigDecimal cartPrice) {
+	public CartBehaviorRestriction(CouponImpl coupon, BigDecimal cartPrice) {
 		super(coupon);
 
 		if(cartPrice == null) {
